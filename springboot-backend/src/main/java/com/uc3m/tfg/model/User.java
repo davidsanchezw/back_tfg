@@ -1,5 +1,7 @@
 package com.uc3m.tfg.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,11 +10,14 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "masters")
-public class Master {
+@Table(name = "users")
+public class User implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	private Long id;
 	
 	@Column(name = "first_name")
 	private String firstName;
@@ -20,23 +25,32 @@ public class Master {
 	@Column(name = "last_name")
 	private String lastName;
 	
-	@Column(name = "email")
+	@Column(name = "email", nullable = false, unique = true)
 	private String email;
 	
-	public Master() {
+	@Column(name = "type_user")
+	private int typeUser;	
+	
+	@Column(name = "hash")
+	private String hash;
+	
+	public User() {
 	
 	}
 	
-	public Master(String firstName, String lastName, String email) {
+	public User(String firstName, String lastName, String email, int typeUser, String salt, String hash) {
 		super();
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
+		this.typeUser = typeUser;
+		this.hash = hash;
 	}
-	public long getId() {
+	
+	public Long getId() {
 		return id;
 	}
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	public String getFirstName() {
@@ -56,6 +70,22 @@ public class Master {
 	}
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public int getTypeUser() {
+		return typeUser;
+	}
+
+	public void setTypeUser(int typeUser) {
+		this.typeUser = typeUser;
+	}
+
+	public String getHash() {
+		return hash;
+	}
+
+	public void setHash(String hash) {
+		this.hash = hash;
 	}
 	
 	
