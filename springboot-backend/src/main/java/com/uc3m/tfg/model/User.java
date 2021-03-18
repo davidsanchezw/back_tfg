@@ -34,6 +34,8 @@ public class User implements Serializable {
 	@Column(name = "hash")
 	private String hash;
 	
+	//Group
+	
 	public User() {
 	
 	}
