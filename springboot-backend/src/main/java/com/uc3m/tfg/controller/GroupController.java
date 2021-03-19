@@ -1,6 +1,7 @@
 package com.uc3m.tfg.controller;
 
-import java.util.HashMap;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -18,10 +19,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.apache.poi.xssf.usermodel.*;
 
 import com.uc3m.tfg.model.Group;
+import com.uc3m.tfg.model.User;
 import com.uc3m.tfg.service.GroupService;
+import com.uc3m.tfg.service.UserService;
 
 
 @RestController
@@ -30,6 +36,8 @@ public class GroupController {
 
 	@Autowired
 	private GroupService groupService;
+	@Autowired
+	private UserService userService;
 	
 	// Get all groups
 	@CrossOrigin(origins = "http://localhost:4200")
@@ -89,4 +97,49 @@ public class GroupController {
 		groupService.deleteById(id);
 		return ResponseEntity.ok().build();
 	}
+	
+	@CrossOrigin(origins = "http://localhost:4200")
+	@PostMapping("/add/{id}")
+	public ResponseEntity<List<User>> importExcelFile(@PathVariable Long id, @RequestParam("file") MultipartFile files) throws IOException {
+        HttpStatus status = HttpStatus.OK;
+        List<User> userList = new ArrayList<>();
+
+        XSSFWorkbook workbook = new XSSFWorkbook(files.getInputStream());
+        XSSFSheet worksheet = workbook.getSheetAt(0);
+        
+        Group group = groupService.findById(id).get();
+		List<Group> listGroups = new ArrayList<>();
+		listGroups.add(group);
+		
+        for (int index = 0; index < worksheet.getPhysicalNumberOfRows(); index++) {
+            if (index > 0) {
+            	User user = new User();
+
+                XSSFRow row = worksheet.getRow(index);
+
+                user.setFirstName(row.getCell(0).getStringCellValue());
+                user.setLastName(row.getCell(1).getStringCellValue());
+                user.setEmail(row.getCell(2).getStringCellValue());
+                user.setTypeUser((int)row.getCell(3).getNumericCellValue());
+                
+                group.addUser(user);
+                userService.save(user);                
+                userList.add(user);
+            }
+        }
+
+        return new ResponseEntity<>(userList, status);
+    }
+	
+//	@CrossOrigin(origins = "http://localhost:4200")
+//	@PostMapping("/remove/{id}")
+//	public ResponseEntity<Map<String, Boolean>> removeUser(@PathVariable Long id){
+//		if(!userService.findById(id).isPresent()) {
+//			return ResponseEntity.notFound().build();
+//		}
+//		
+//		groupService.deleteById(id);
+//		return ResponseEntity.ok().build();
+//	}
+	
 }

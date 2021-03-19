@@ -1,12 +1,16 @@
 package com.uc3m.tfg.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -34,7 +38,10 @@ public class User implements Serializable {
 	@Column(name = "hash")
 	private String hash;
 	
-	//Group
+	//Groups
+	@ManyToMany(fetch = FetchType.LAZY,
+			mappedBy="users")
+	private List<Group> group = new ArrayList<>();
 	
 	public User() {
 	
@@ -88,6 +95,14 @@ public class User implements Serializable {
 
 	public void setHash(String hash) {
 		this.hash = hash;
+	}
+
+	public List<Group> getGroup() {
+		return group;
+	}
+
+	public void setGroup(List<Group> group) {
+		this.group = group;
 	}
 	
 	
