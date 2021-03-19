@@ -13,6 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "users")
 public class User implements Serializable {
@@ -97,6 +99,7 @@ public class User implements Serializable {
 		this.hash = hash;
 	}
 
+	@JsonBackReference
 	public List<Group> getGroup() {
 		return group;
 	}
