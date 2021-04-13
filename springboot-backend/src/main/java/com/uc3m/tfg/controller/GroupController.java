@@ -98,6 +98,7 @@ public class GroupController {
 		return ResponseEntity.ok().build();
 	}
 	
+	// Add users file - Import excel
 	@CrossOrigin(origins = "http://localhost:4200")
 	@PostMapping("/add/{id}")
 	public ResponseEntity<List<User>> importExcelFile(@PathVariable Long id, @RequestParam("file") MultipartFile files) throws IOException {
@@ -131,15 +132,39 @@ public class GroupController {
         return new ResponseEntity<>(userList, status);
     }
 	
-//	@CrossOrigin(origins = "http://localhost:4200")
-//	@PostMapping("/remove/{id}")
-//	public ResponseEntity<Map<String, Boolean>> removeUser(@PathVariable Long id){
-//		if(!userService.findById(id).isPresent()) {
-//			return ResponseEntity.notFound().build();
-//		}
-//		
-//		groupService.deleteById(id);
-//		return ResponseEntity.ok().build();
-//	}
+	// Add an user to a group
+	@CrossOrigin(origins = "http://localhost:4200")
+	@PostMapping("/add/{id}/{user}")
+	public ResponseEntity<Map<String, Boolean>> addGroupUser(@PathVariable Long id, @PathVariable Long user){
+		if(!userService.findById(id).isPresent() || !groupService.findById(id).isPresent()) {
+			return ResponseEntity.notFound().build();
+		}
+		// Search group
+		Optional<Group> group = groupService.findById(id);
+		Optional<User> oUser = userService.findById(user);		
+		
+		group.get().getUsers().add(oUser.get());	
+		groupService.save(group.get());
+		
+		return ResponseEntity.ok().build();
+	}
+	
+	
+	// Remove an user from a group
+	@CrossOrigin(origins = "http://localhost:4200")
+	@PostMapping("/remove/{id}/{user}")
+	public ResponseEntity<Map<String, Boolean>> removeGroupUser(@PathVariable Long id, @PathVariable Long user){
+		if(!userService.findById(id).isPresent() || !groupService.findById(id).isPresent()) {
+			return ResponseEntity.notFound().build();
+		}
+		// Search group
+		Optional<Group> group = groupService.findById(id);
+		Optional<User> oUser = userService.findById(user);		
+
+		group.get().removeUser(oUser.get());
+		groupService.save(group.get());
+		
+		return ResponseEntity.ok().build();
+	}
 	
 }

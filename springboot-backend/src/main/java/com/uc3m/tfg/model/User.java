@@ -43,7 +43,7 @@ public class User implements Serializable {
 	//Groups
 	@ManyToMany(fetch = FetchType.LAZY,
 			mappedBy="users")
-	private List<Group> group = new ArrayList<>();
+	private List<Group> groups = new ArrayList<>();
 	
 	public User() {
 	
@@ -100,12 +100,12 @@ public class User implements Serializable {
 	}
 
 	@JsonBackReference
-	public List<Group> getGroup() {
-		return group;
+	public List<Group> getGroups() {
+		return groups;
 	}
 
-	public void setGroup(List<Group> group) {
-		this.group = group;
+	public void setGroups(List<Group> group) {
+		this.groups = group;
 	}
 	
 	

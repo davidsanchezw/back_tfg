@@ -81,12 +81,12 @@ public class Group implements Serializable {
 	
 	public void addUser(User user) {
         users.add(user);
-        user.getGroup().add(this);
+        user.getGroups().add(this);
     }
 	
 	public void removeUser(User user) {
 		users.remove(user);
-        user.getGroup().remove(this);
+        user.getGroups().remove(this);
     }
 
 }
