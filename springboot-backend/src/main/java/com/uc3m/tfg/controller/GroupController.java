@@ -53,6 +53,8 @@ public class GroupController {
 	@CrossOrigin(origins = "http://localhost:4200")
 	@PostMapping
 	public ResponseEntity<?> createGroup(@RequestBody Group group) {
+		if (groupService.findByGroupName(group.getName()).isPresent())
+			return ResponseEntity.status(HttpStatus.FOUND).body(groupService.findByGroupName(group.getName()));
 		return ResponseEntity.status(HttpStatus.CREATED).body(groupService.save(group));
 	}
 	
@@ -136,7 +138,7 @@ public class GroupController {
 	@CrossOrigin(origins = "http://localhost:4200")
 	@PostMapping("/add/{id}/{user}")
 	public ResponseEntity<Map<String, Boolean>> addGroupUser(@PathVariable Long id, @PathVariable Long user){
-		if(!userService.findById(id).isPresent() || !groupService.findById(id).isPresent()) {
+		if(!userService.findById(user).isPresent() || !groupService.findById(id).isPresent()) {
 			return ResponseEntity.notFound().build();
 		}
 		// Search group
@@ -165,6 +167,7 @@ public class GroupController {
 		groupService.save(group.get());
 		
 		return ResponseEntity.ok().build();
-	}
+	}	
+
 	
 }

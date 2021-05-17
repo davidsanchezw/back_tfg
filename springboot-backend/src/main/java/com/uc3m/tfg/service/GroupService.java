@@ -20,5 +20,6 @@ public interface GroupService {
 	
 	public void deleteById(Long id);	
 	
+	public Optional<Group> findByGroupName(String groupName);
 
 }

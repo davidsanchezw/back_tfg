@@ -45,4 +45,10 @@ public class GroupServiceImpl implements GroupService{
 		groupRepository.deleteById(id);
 	}
 	
+	@Override
+	public Optional<Group> findByGroupName(String groupName){
+		return groupRepository.findByGroupName(groupName);		
+	}
+
+	
 }
