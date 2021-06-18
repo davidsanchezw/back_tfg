@@ -99,7 +99,7 @@ public class User implements Serializable {
 		this.hash = hash;
 	}
 
-	@JsonBackReference
+	@JsonBackReference // PAra que no se muestr en bucle
 	public List<Group> getGroups() {
 		return groups;
 	}

@@ -1,13 +1,17 @@
 package com.uc3m.tfg.model;
 
 import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "task")
@@ -19,10 +23,10 @@ public class Task implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column(name = "type_identity")
+	@Column(name = "type_identity") // grupal o individual
 	private int typeIdentity;
 	
-	@Column(name = "type_task")
+	@Column(name = "type_task") // test o desarrollo
 	private int typeTask;
 	
 	@Column(name = "title")
@@ -38,6 +42,13 @@ public class Task implements Serializable {
 	private int answers;
 	
 	//Group
+	@ManyToOne
+    @JoinColumn(name = "group_id")
+    private Group group;
+	
+	@OneToOne
+	@JoinColumn(name = "scheduleTime_id", referencedColumnName = "id")
+	private ScheduleTime scheduleTime;
 	
 	public Task() {
 	
@@ -136,11 +147,26 @@ public class Task implements Serializable {
 
 	public void setAnswers(int answers) {
 		this.answers = answers;
+	}	
+	
+	@JsonBackReference // PAra que no se muestr en bucle
+	public Group getGroup() {
+		return group;
+	}
+
+	public void setGroup(Group group) {
+		this.group =  group;
 	}
 
 
+	public ScheduleTime getScheduleTime() {
+		return scheduleTime;
+	}
 
-	
+
+	public void setScheduleTime(ScheduleTime scheduleTime) {
+		this.scheduleTime = scheduleTime;
+	}
 	
 	
 

@@ -1,6 +1,5 @@
 package com.uc3m.tfg.controller;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -20,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.uc3m.tfg.model.Group;
 import com.uc3m.tfg.model.Task;
+import com.uc3m.tfg.service.GroupService;
 import com.uc3m.tfg.service.TaskService;
 
 
@@ -28,8 +29,10 @@ import com.uc3m.tfg.service.TaskService;
 @RequestMapping("/api/tasks")
 public class TaskController {
 
-	@Autowired
+	@Autowired	
 	private TaskService taskService;
+	@Autowired
+	private GroupService groupService;
 	
 	// Get all tasks
 	@CrossOrigin(origins = "http://localhost:4200")
@@ -43,8 +46,16 @@ public class TaskController {
 	
 	// Create task
 	@CrossOrigin(origins = "http://localhost:4200")
-	@PostMapping
-	public ResponseEntity<?> createTask(@RequestBody Task task) {
+	@PostMapping("/{group}")
+	public ResponseEntity<?> createTask(@RequestBody Task task, @PathVariable Long group) {
+		if(!groupService.findById(group).isPresent()) {
+			return ResponseEntity.notFound().build();
+		}
+		// Search group
+				Optional<Group> oGroup = groupService.findById(group);
+				
+				oGroup.get().addTask(task);	
+		
 		return ResponseEntity.status(HttpStatus.CREATED).body(taskService.save(task));
 	}
 	

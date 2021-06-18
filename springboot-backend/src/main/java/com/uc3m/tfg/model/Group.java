@@ -45,6 +45,8 @@ public class Group implements Serializable {
 	
 	
 	//Tareas
+	@OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Task> tasks = new ArrayList<>();
 	
 	public Group() {
 	
@@ -87,6 +89,15 @@ public class Group implements Serializable {
 	public void removeUser(User user) {
 		users.remove(user);
         user.getGroups().remove(this);
+    }
+	
+	public List<Task> getTasks() {
+		return tasks;
+	}
+	
+	public void addTask(Task task) {
+        tasks.add(task);
+        task.setGroup(this);
     }
 
 }
