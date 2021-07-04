@@ -14,6 +14,8 @@ import javax.persistence.*;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 @Table(name = "groups")
 public class Group implements Serializable {
@@ -91,6 +93,7 @@ public class Group implements Serializable {
         user.getGroups().remove(this);
     }
 	
+	@JsonManagedReference(value="task-group")
 	public List<Task> getTasks() {
 		return tasks;
 	}

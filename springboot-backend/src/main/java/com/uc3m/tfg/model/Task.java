@@ -1,6 +1,10 @@
 package com.uc3m.tfg.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,10 +12,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "task")
@@ -49,6 +55,10 @@ public class Task implements Serializable {
 	@OneToOne
 	@JoinColumn(name = "scheduleTime_id", referencedColumnName = "id")
 	private ScheduleTime scheduleTime;
+	
+	//Responses
+	@OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<ResponseStatement> responseStatement = new ArrayList<>();
 	
 	public Task() {
 	
@@ -149,7 +159,7 @@ public class Task implements Serializable {
 		this.answers = answers;
 	}	
 	
-	@JsonBackReference // PAra que no se muestr en bucle
+	@JsonBackReference(value="task-group") // PAra que no se muestr en bucle
 	public Group getGroup() {
 		return group;
 	}
@@ -158,7 +168,7 @@ public class Task implements Serializable {
 		this.group =  group;
 	}
 
-
+	@JsonManagedReference(value="task-time")
 	public ScheduleTime getScheduleTime() {
 		return scheduleTime;
 	}
@@ -167,7 +177,20 @@ public class Task implements Serializable {
 	public void setScheduleTime(ScheduleTime scheduleTime) {
 		this.scheduleTime = scheduleTime;
 	}
+
+	@JsonBackReference(value="task-responseStatement")
+	public List<ResponseStatement> getResponseStatement() {
+		return responseStatement;
+	}
+
+
+	public void setResponseStatement(List<ResponseStatement> responseStatement) {
+		this.responseStatement = responseStatement;
+	}
 	
-	
+	public void addStatement(ResponseStatement statement) {
+		responseStatement.add(statement);
+        statement.setTask(this);
+    }
 
 }

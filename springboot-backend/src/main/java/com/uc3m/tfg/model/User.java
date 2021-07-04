@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -44,6 +46,11 @@ public class User implements Serializable {
 	@ManyToMany(fetch = FetchType.LAZY,
 			mappedBy="users")
 	private List<Group> groups = new ArrayList<>();
+	
+	//Responses
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<ResponseStatement> responseStatement = new ArrayList<>();
+		
 	
 	public User() {
 	
@@ -99,7 +106,7 @@ public class User implements Serializable {
 		this.hash = hash;
 	}
 
-	@JsonBackReference // PAra que no se muestr en bucle
+	@JsonBackReference(value="user-group") // PAra que no se muestr en bucle
 	public List<Group> getGroups() {
 		return groups;
 	}
@@ -108,6 +115,18 @@ public class User implements Serializable {
 		this.groups = group;
 	}
 	
+	@JsonBackReference(value="user-response")
+	public List<ResponseStatement> getResponseStatement() {
+		return responseStatement;
+	}
+
+	public void setResponseStatement(List<ResponseStatement> responseStatement) {
+		this.responseStatement = responseStatement;
+	}
 	
+	public void addStatement(ResponseStatement statement) {
+		responseStatement.add(statement);
+        statement.setUser(this);
+    }
 
 }

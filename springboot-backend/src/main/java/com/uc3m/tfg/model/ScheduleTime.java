@@ -93,7 +93,7 @@ public class ScheduleTime implements Serializable {
 		this.finalRevision = finalRevision;
 	}
 
-	@JsonBackReference // PAra que no se muestr en bucle
+	@JsonBackReference(value="task-time") // PAra que no se muestr en bucle
 	public Task getTask() {
 		return task;
 	}
