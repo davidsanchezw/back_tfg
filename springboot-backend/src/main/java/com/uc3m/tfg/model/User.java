@@ -47,6 +47,11 @@ public class User implements Serializable {
 			mappedBy="users")
 	private List<Group> groups = new ArrayList<>();
 	
+	//Teams
+		@ManyToMany(fetch = FetchType.LAZY,
+				mappedBy="users")
+		private List<Team> teams = new ArrayList<>();
+	
 	//Responses
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ResponseStatement> responseStatement = new ArrayList<>();
@@ -128,5 +133,12 @@ public class User implements Serializable {
 		responseStatement.add(statement);
         statement.setUser(this);
     }
+
+	@JsonBackReference(value="user-team")
+	public List<Team> getTeams() {
+		return teams;
+	}
+	
+	
 
 }

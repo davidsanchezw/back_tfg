@@ -60,6 +60,9 @@ public class Task implements Serializable {
 	@OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ResponseStatement> responseStatement = new ArrayList<>();
 	
+	@OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Team> teams = new ArrayList<>();
+	
 	public Task() {
 	
 	}
@@ -193,4 +196,8 @@ public class Task implements Serializable {
         statement.setTask(this);
     }
 
+	public void addTeam(Team team) {
+        teams.add(team);
+        team.setTask(this);
+    }
 }
