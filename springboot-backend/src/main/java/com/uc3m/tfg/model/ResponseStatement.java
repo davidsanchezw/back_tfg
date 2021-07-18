@@ -17,7 +17,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 
 @Entity
@@ -51,8 +50,9 @@ public class ResponseStatement implements Serializable {
     private Task task;
 	
 
-	//Team
-	
+	//Forum
+	@OneToMany(mappedBy = "response", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Comment> comments = new ArrayList<>();
 		
 
 	public ResponseStatement(LocalDateTime lastTime, String statement, List<ResponseAnswer> responseAnswer, User user,
@@ -66,6 +66,15 @@ public class ResponseStatement implements Serializable {
 	}
 	
 	public ResponseStatement() {
+	}
+
+	
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public LocalDateTime getLastTime() {
@@ -114,5 +123,9 @@ public class ResponseStatement implements Serializable {
 		this.task = task;
 	}
 	
+	public void addComment(Comment comment) {
+		comments.add(comment);
+        comment.setResponse(this);
+    }
 
 }

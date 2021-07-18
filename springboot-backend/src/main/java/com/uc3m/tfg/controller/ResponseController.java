@@ -96,13 +96,10 @@ public class ResponseController {
 	@CrossOrigin(origins = "http://localhost:4200")
 	@PostMapping("/statements/{task}/{user}")
 	public ResponseEntity<?> createResponseStatements(@RequestBody ResponseStatement responseStatements, @PathVariable Long task, @PathVariable Long user) {
-		System.out.println("1");
 		if(!userService.findById(user).isPresent() || !taskService.findById(task).isPresent()) {
-			System.out.println("2");
 			return ResponseEntity.notFound().build();
 			
 		}		
-		System.out.println("1");
 		// Search task
 				Optional<Task> oTask = taskService.findById(task);
 				

@@ -48,13 +48,16 @@ public class User implements Serializable {
 	private List<Group> groups = new ArrayList<>();
 	
 	//Teams
-		@ManyToMany(fetch = FetchType.LAZY,
+	@ManyToMany(fetch = FetchType.LAZY,
 				mappedBy="users")
-		private List<Team> teams = new ArrayList<>();
+	private List<Team> teams = new ArrayList<>();
 	
 	//Responses
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ResponseStatement> responseStatement = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Comment> comments = new ArrayList<>();
 		
 	
 	public User() {
@@ -139,6 +142,9 @@ public class User implements Serializable {
 		return teams;
 	}
 	
-	
+	public void addComment(Comment comment) {
+		comments.add(comment);
+        comment.setUser(this);
+    }
 
 }
