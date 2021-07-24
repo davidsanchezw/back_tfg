@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.uc3m.tfg.model.Group;
 import com.uc3m.tfg.model.User;
 import com.uc3m.tfg.repository.UserRepository;
 
@@ -45,6 +46,9 @@ public class UserServiceImpl implements UserService{
 		userRepository.deleteById(id);
 	}
 	
-	
+	@Override
+	public Iterable<User> findByGroup(Group group){
+		return userRepository.findByGroups(group);
+	}
 
 }

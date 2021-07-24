@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.uc3m.tfg.model.Group;
 import com.uc3m.tfg.model.User;
+import com.uc3m.tfg.service.GroupService;
 import com.uc3m.tfg.service.UserService;
 
 
@@ -29,6 +31,9 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private GroupService groupService;
 	
 	// Get all users
 	@CrossOrigin(origins = "http://localhost:4200")
@@ -91,6 +96,15 @@ public class UserController {
 		return ResponseEntity.ok().build();
 	}
 	
-	
+	// Get users by group
+		@CrossOrigin(origins = "http://localhost:4200")
+		@GetMapping("/listByGrouId/{id}")
+		public List<User> getUsersByGroupId(@PathVariable Long id){
+			Optional<Group> group = groupService.findById(id);
+			List<User> users = StreamSupport
+					.stream(userService.findByGroup(group.get()).spliterator(), false)
+					.collect(Collectors.toList());
+			return users;
+		}
 	
 }

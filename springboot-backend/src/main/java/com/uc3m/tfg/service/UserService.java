@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.uc3m.tfg.model.Group;
 import com.uc3m.tfg.model.User;
 
 public interface UserService {
@@ -18,5 +19,7 @@ public interface UserService {
 	public User save(User user);
 	
 	public void deleteById(Long id);	
+	
+	public Iterable<User> findByGroup(Group group);
 
 }
