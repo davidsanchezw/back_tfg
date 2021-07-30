@@ -16,4 +16,5 @@ import com.uc3m.tfg.model.User;
 public interface GroupRepository extends JpaRepository<Group, Long>{
 	//Consultas basadas en nombre de metodo
 	public Optional<Group> findByGroupName(String groupName);
+	public Iterable<Group> findByUsers(User user);
 }

@@ -1,5 +1,6 @@
 package com.uc3m.tfg.controller;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -23,6 +24,7 @@ import com.uc3m.tfg.model.Group;
 import com.uc3m.tfg.model.User;
 import com.uc3m.tfg.service.GroupService;
 import com.uc3m.tfg.service.UserService;
+
 
 
 @RestController
@@ -106,5 +108,53 @@ public class UserController {
 					.collect(Collectors.toList());
 			return users;
 		}
+		
+		// login
+		@CrossOrigin(origins = "http://localhost:4200")
+		@PutMapping("/login")
+		public ResponseEntity<?> login(@RequestBody User userDetails){
+			Optional<User> user = userService.findByEmail(userDetails.getEmail());
+			
+			if(!user.isPresent()) {
+				return ResponseEntity.notFound().build();
+			}
+			
+			if (user.get().getHash().compareTo(userDetails.getHash()) == 0) {
+				return ResponseEntity.ok(user.get());
+			}
+			return ResponseEntity.notFound().build();
+		}
+		
+//		private String getJWTToken(String username) {
+//			String secretKey = "mySecretKey";
+//			List<GrantedAuthority> grantedAuthorities = AuthorityUtils
+//					.commaSeparatedStringToAuthorityList("ROLE_USER");
+//			
+//			String token = Jwts
+//					.builder()
+//					.setId("softtekJWT")
+//					.setSubject(username)
+//					.claim("authorities",
+//							grantedAuthorities.stream()
+//									.map(GrantedAuthority::getAuthority)
+//									.collect(Collectors.toList()))
+//					.setIssuedAt(new Date(System.currentTimeMillis()))
+//					.setExpiration(new Date(System.currentTimeMillis() + 600000))
+//					.signWith(SignatureAlgorithm.HS512,
+//							secretKey.getBytes()).compact();
+//
+//			return "Bearer " + token;
+//		}
+		
+//		// Get users by token
+//				@CrossOrigin(origins = "http://localhost:4200")
+//				@GetMapping("/token")
+//				public List<User> getUsersBToken(@PathVariable Long id){
+//					Optional<Group> group = groupService.findById(id);
+//					List<User> users = StreamSupport
+//							.stream(userService.findByGroup(group.get()).spliterator(), false)
+//							.collect(Collectors.toList());
+//					return users;
+//				}
 	
 }

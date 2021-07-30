@@ -146,5 +146,14 @@ public class User implements Serializable {
 		comments.add(comment);
         comment.setUser(this);
     }
+	
+	public User userDetails() {
+		User userDetails = new User();
+		userDetails.setId(this.id);
+		userDetails.setFirstName(this.firstName);
+		userDetails.setLastName(this.lastName);
+		userDetails.setTypeUser(this.typeUser);		
+        return userDetails;
+    }
 
 }

@@ -169,5 +169,15 @@ public class GroupController {
 		return ResponseEntity.ok().build();
 	}	
 
+	// Get groups by user
+	@CrossOrigin(origins = "http://localhost:4200")
+	@GetMapping("/listByUserID/{id}")
+	public List<Group> getGroupsByUserId(@PathVariable Long id){
+		Optional<User> user = userService.findById(id);
+		List<Group> groups = StreamSupport
+				.stream(groupService.findByUser(user.get()).spliterator(), false)
+				.collect(Collectors.toList());
+		return groups;
+	}
 	
 }

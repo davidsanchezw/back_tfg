@@ -14,12 +14,15 @@ public interface UserService {
 	
 	public Page<User> findAll(Pageable pageable);
 	
-	public Optional<User> findById(Long id);
+	public Optional<User> findById(Long id);	
 	
 	public User save(User user);
 	
 	public void deleteById(Long id);	
 	
 	public Iterable<User> findByGroup(Group group);
+	
+	public Optional<User> findByEmail(String email);
+
 
 }

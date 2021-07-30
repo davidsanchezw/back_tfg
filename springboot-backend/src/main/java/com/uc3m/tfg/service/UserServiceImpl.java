@@ -50,5 +50,10 @@ public class UserServiceImpl implements UserService{
 	public Iterable<User> findByGroup(Group group){
 		return userRepository.findByGroups(group);
 	}
+	
+	@Override
+	public Optional<User> findByEmail(String email){
+		return userRepository.findByEmail(email);
+	}
 
 }
