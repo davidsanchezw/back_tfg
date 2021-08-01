@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.uc3m.tfg.model.Group;
+import com.uc3m.tfg.model.Task;
 import com.uc3m.tfg.model.User;
 import com.uc3m.tfg.repository.GroupRepository;
 
@@ -55,5 +56,11 @@ public class GroupServiceImpl implements GroupService{
 	public Iterable<Group> findByUser(User user){
 		return groupRepository.findByUsers(user);
 	}
+	
+	@Override
+	public Optional<Group> findByTasks(Task task){
+		return groupRepository.findByTasks(task);
+	}
+
 	
 }

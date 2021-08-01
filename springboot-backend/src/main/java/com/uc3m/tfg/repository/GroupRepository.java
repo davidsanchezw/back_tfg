@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.uc3m.tfg.model.Group;
+import com.uc3m.tfg.model.Task;
 import com.uc3m.tfg.model.User;
 
 @Repository
@@ -17,4 +18,6 @@ public interface GroupRepository extends JpaRepository<Group, Long>{
 	//Consultas basadas en nombre de metodo
 	public Optional<Group> findByGroupName(String groupName);
 	public Iterable<Group> findByUsers(User user);
+	public Optional<Group> findByTasks(Task	task);
+
 }

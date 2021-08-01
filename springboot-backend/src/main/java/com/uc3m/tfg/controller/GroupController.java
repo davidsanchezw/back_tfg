@@ -25,8 +25,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.apache.poi.xssf.usermodel.*;
 
 import com.uc3m.tfg.model.Group;
+import com.uc3m.tfg.model.Task;
 import com.uc3m.tfg.model.User;
 import com.uc3m.tfg.service.GroupService;
+import com.uc3m.tfg.service.TaskService;
 import com.uc3m.tfg.service.UserService;
 
 
@@ -38,6 +40,8 @@ public class GroupController {
 	private GroupService groupService;
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private TaskService taskService;
 	
 	// Get all groups
 	@CrossOrigin(origins = "http://localhost:4200")
@@ -178,6 +182,19 @@ public class GroupController {
 				.stream(groupService.findByUser(user.get()).spliterator(), false)
 				.collect(Collectors.toList());
 		return groups;
+	}
+	
+	// Get group by task
+	@CrossOrigin(origins = "http://localhost:4200")
+	@GetMapping("/groupByTask/{id}")
+	public ResponseEntity<?> getGroupsByTask(@PathVariable Long id){
+		Optional<Task> task = taskService.findById(id);
+		Optional<Group> oGroup = groupService.findByTasks(task.get());
+		if(!oGroup.isPresent()) {
+			return ResponseEntity.notFound().build();
+		}
+		
+		return ResponseEntity.ok(oGroup);
 	}
 	
 }

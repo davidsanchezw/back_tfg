@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.uc3m.tfg.model.Group;
 import com.uc3m.tfg.model.Task;
 import com.uc3m.tfg.repository.TaskRepository;
 
@@ -45,6 +46,10 @@ public class TaskServiceImpl implements TaskService{
 		taskRepository.deleteById(id);
 	}
 	
-	
+	@Override
+	public Iterable<Task> findByGroup(Group group){
+		return taskRepository.findByGroup(group);
+	}
+
 
 }

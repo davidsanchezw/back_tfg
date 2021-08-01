@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.uc3m.tfg.model.Group;
 import com.uc3m.tfg.model.Task;
+import com.uc3m.tfg.model.User;
 import com.uc3m.tfg.service.GroupService;
 import com.uc3m.tfg.service.TaskService;
 
@@ -101,4 +102,15 @@ public class TaskController {
 		taskService.deleteById(id);
 		return ResponseEntity.ok().build();
 	}
+	
+	// Get tasks by group
+		@CrossOrigin(origins = "http://localhost:4200")
+		@GetMapping("/TaskListByGroup/{id}")
+		public List<Task> getTaskListByGroupId(@PathVariable Long id){
+			Optional<Group> group = groupService.findById(id);
+			List<Task> tasks = StreamSupport
+					.stream(taskService.findByGroup(group.get()).spliterator(), false)
+					.collect(Collectors.toList());
+			return tasks;
+		}
 }

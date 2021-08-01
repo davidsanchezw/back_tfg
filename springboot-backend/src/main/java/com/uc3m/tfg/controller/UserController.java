@@ -82,6 +82,7 @@ public class UserController {
 		user.get().setFirstName(userDetails.getFirstName());
 		user.get().setLastName(userDetails.getLastName());
 		user.get().setEmail(userDetails.getEmail());
+		user.get().setHash(userDetails.getHash());
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(user.get()));
 	}
