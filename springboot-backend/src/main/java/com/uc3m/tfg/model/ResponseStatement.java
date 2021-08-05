@@ -17,6 +17,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 
 @Entity
@@ -93,7 +94,6 @@ public class ResponseStatement implements Serializable {
 		this.statement = statement;
 	}
 
-	@JsonBackReference
 	public List<ResponseAnswer> getResponseAnswer() {
 		return responseAnswer;
 	}
@@ -107,6 +107,7 @@ public class ResponseStatement implements Serializable {
 		answer.setResponseStatement(this);
     }
 
+	@JsonBackReference(value="user-response")
 	public User getUser() {
 		return user;
 	}
@@ -115,6 +116,7 @@ public class ResponseStatement implements Serializable {
 		this.user = user;
 	}
 	
+	@JsonBackReference(value="task-response")
 	public Task getTask() {
 		return task;
 	}

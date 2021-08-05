@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.uc3m.tfg.model.ResponseStatement;
+import com.uc3m.tfg.model.Task;
+import com.uc3m.tfg.model.User;
 
 public interface ResponseStatementService {
 	
@@ -20,4 +22,5 @@ public interface ResponseStatementService {
 	
 	public void deleteById(Long id);		
 
+	public Optional<ResponseStatement> findByTaskAndUser(Task task, User user);
 }

@@ -177,16 +177,29 @@ public class ResponseController {
 	}
 	
 	// Delete ResponseAnswer
-		@CrossOrigin(origins = "http://localhost:4200")
-		@DeleteMapping("/answers/{id}")
-		public ResponseEntity<Map<String, Boolean>> deleteResponseAnswer(@PathVariable Long id){
-			if(!responseAnswerService.findById(id).isPresent()) {
-				return ResponseEntity.notFound().build();
-			}
-			
-			responseAnswerService.deleteById(id);
-			return ResponseEntity.ok().build();
+	@CrossOrigin(origins = "http://localhost:4200")
+	@DeleteMapping("/answers/{id}")
+	public ResponseEntity<Map<String, Boolean>> deleteResponseAnswer(@PathVariable Long id){
+		if(!responseAnswerService.findById(id).isPresent()) {
+			return ResponseEntity.notFound().build();
 		}
-	
 		
+		responseAnswerService.deleteById(id);
+		return ResponseEntity.ok().build();
+	}
+	
+	//getResponseByTaskAndUser		
+	@CrossOrigin(origins = "http://localhost:4200")
+	@GetMapping("/{idTask}/{idUser}")
+	public ResponseEntity<?> getResponseByTaskAndUser(@PathVariable Long idTask, @PathVariable Long idUser) {
+		Optional<Task> task = taskService.findById(idTask);
+		Optional<User> user = userService.findById(idUser);
+		System.out.print(task.get().getTitle());
+		System.out.print(user.get().getEmail());
+		
+		Optional<ResponseStatement> oResponseStatement = responseStatementService.findByTaskAndUser(task.get(), user.get());
+					
+		
+		return ResponseEntity.ok(oResponseStatement);
+	}
 }

@@ -10,6 +10,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 @Table(name = "responsesanswers")
 public class ResponseAnswer implements Serializable {
@@ -34,6 +37,13 @@ public class ResponseAnswer implements Serializable {
 	public boolean isCorrect() {
 		return correct;
 	}
+	
+	
+
+	public Long getId() {
+		return id;
+	}
+
 
 	public void setCorrect(boolean correct) {
 		this.correct = correct;
@@ -47,6 +57,7 @@ public class ResponseAnswer implements Serializable {
 		this.answer = answer;
 	}
 
+	@JsonBackReference(value="task-group")
 	public ResponseStatement getResponseStatement() {
 		return responseStatement;
 	}

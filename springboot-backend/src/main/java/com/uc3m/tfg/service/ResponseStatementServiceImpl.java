@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.uc3m.tfg.model.ResponseStatement;
+import com.uc3m.tfg.model.Task;
+import com.uc3m.tfg.model.User;
 import com.uc3m.tfg.repository.ResponseStatementRepository;
 
 @Service
@@ -42,5 +44,10 @@ public class ResponseStatementServiceImpl implements ResponseStatementService{
 	@Override
 	public void deleteById(Long id) {
 		responseStatementRepository.deleteById(id);
+	}
+	
+	@Override
+	public Optional<ResponseStatement> findByTaskAndUser(Task task, User user){
+		return responseStatementRepository.findByTaskAndUser(task, user);
 	}
 }
