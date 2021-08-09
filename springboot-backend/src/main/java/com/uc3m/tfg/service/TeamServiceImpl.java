@@ -1,5 +1,6 @@
 package com.uc3m.tfg.service;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.uc3m.tfg.model.Task;
 import com.uc3m.tfg.model.Team;
 import com.uc3m.tfg.repository.TeamRepository;
 
@@ -34,17 +36,24 @@ public class TeamServiceImpl implements TeamService{
 	public Optional<Team> findById(Long id) {
 		return teamRepository.findById(id);
 	}
+	
+	@Override
+	public Iterable<Team> findByTask(Task task){
+		return teamRepository.findByTask(task);
+	}
 
 	@Override
 	public Team save(Team team) {
 		return teamRepository.save(team);
 	}
+	
+	@Override
+	public List<Team> saveAll(List<Team> teams) {
+		return teamRepository.saveAll(teams);
+	}
 
 	@Override
 	public void deleteById(Long id) {
 		teamRepository.deleteById(id);
-	}
-	
-
-	
+	}	
 }

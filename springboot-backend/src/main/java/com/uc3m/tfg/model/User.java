@@ -155,5 +155,9 @@ public class User implements Serializable {
 		userDetails.setTypeUser(this.typeUser);		
         return userDetails;
     }
+	
+	public void addTeam(Team team) {
+		teams.add(team);
+    }
 
 }

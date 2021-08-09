@@ -24,5 +24,7 @@ public interface UserService {
 	
 	public Optional<User> findByEmail(String email);
 
+	public Iterable<User> findByGroupsAndTypeUser(Group group, int typeUser);
 
+	
 }

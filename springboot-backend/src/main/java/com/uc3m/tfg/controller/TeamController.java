@@ -1,5 +1,6 @@
 package com.uc3m.tfg.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -50,18 +51,102 @@ public class TeamController {
 	
 	// Create team
 	@CrossOrigin(origins = "http://localhost:4200")
-	@PostMapping("/{task}")
-	public ResponseEntity<?> createTeam(@RequestBody Team team, @PathVariable Long task) {
+	@PostMapping("/{task}/{numberTeam}")
+	public ResponseEntity<?> createTeams(@PathVariable Long task, @PathVariable int numberTeam) {
 		if(!taskService.findById(task).isPresent()) {
 			return ResponseEntity.notFound().build();
 		}
 		// Search task
 		Optional<Task> oTask = taskService.findById(task);
 				
-		oTask.get().addTeam(team);	
+		//get Id task
+		System.out.println(oTask.get().getGroup().getName());
+		//Get alumnos con grupo y rol
+		List<User> students = StreamSupport
+				.stream(userService.findByGroupsAndTypeUser(oTask.get().getGroup(), 1).spliterator(), false)
+				.collect(Collectors.toList());		
+        
+            
+
+		// Ordenar lista por nota
+		//Obtener num de grupos teams necesarios
+		int numGrops = students.size() / (int)numberTeam;
+		if (students.size() % (int)numberTeam != 0) numGrops++;
 		
-		return ResponseEntity.status(HttpStatus.CREATED).body(teamService.save(team));
+		//añadir alumnos
+		int w = 0;
+        int max = w + numberTeam;
+		Team teamTemp = new Team();
+		List<Team> listTeam = new ArrayList<Team>();
+		
+		//Ordenar primeros con ultimos
+		List<User> temp = new ArrayList<User>();
+        int last = students.size();
+        for (int i=0; i < students.size() && i < last; i++){
+            temp.add(students.get(i));
+            last--;
+            if (i < last) temp.add(students.get(last));
+        }        
+        students = temp;
+		
+		// Añade alumnos a los teams
+		for(int j = 0; j < numGrops; j++) {
+			teamTemp = new Team();
+            teamTemp.addList(students.subList(w, max)); 
+            teamTemp.setTask(oTask.get());
+            listTeam.add(teamTemp);
+
+			w = max;
+			 
+			if (max + numberTeam < students.size()) max = max + numberTeam;
+			else max = students.size();
+		}
+		;
+		//oTask.get().addTeam(team);	
+		
+		return ResponseEntity.status(HttpStatus.CREATED).body(teamService.saveAll(listTeam));
 	}
+	
+	/*
+	 * List<String> lista = new ArrayList();
+        lista.add("a");
+        lista.add("b");
+        lista.add("c");
+        lista.add("d");
+        lista.add("e");
+        lista.add("f");
+        int numTeam = 3;
+        int numGrops = 2;
+        List<List<String>> lista2 = new ArrayList();
+        int w = 0;
+        int max = w + numTeam;
+        List<String> listTemp;
+        
+        List<String> temp = new ArrayList();
+        int last = lista.size();
+        for (int i=0; i < lista.size() && i < last; i++){
+            temp.add(lista.get(i));
+            last--;
+            if (i < last) temp.add(lista.get(last));
+        }
+        
+        lista = temp;
+        System.out.println(lista);
+        
+        HECHO DESDE AQUI
+        for(int j = 0; j < numGrops; j++) {
+            listTemp = lista.subList(w, max); 
+			lista2.add(listTemp);
+			w = max;
+			 
+			if (max + numTeam < lista.size()) max = max + numTeam;
+			else max = lista.size();
+		}
+		
+        System.out.println(lista2);
+	 */
+	
+	
 	
 	// Get team by id
 	@CrossOrigin(origins = "http://localhost:4200")
@@ -76,6 +161,19 @@ public class TeamController {
 		
 		return ResponseEntity.ok(oTeam);
 	}
+	
+	// Get team by task
+		@CrossOrigin(origins = "http://localhost:4200")
+		@GetMapping("/TeamsByTask/{idTask}")
+		public List<Team> getTeamsByTask(@PathVariable Long idTask) {
+			
+			Optional<Task> oTask = taskService.findById(idTask);			
+			List<Team> teams = StreamSupport
+					.stream(teamService.findByTask(oTask.get()).spliterator(), false)
+					.collect(Collectors.toList());				
+			return teams;
+		}
+	
 	
 	// Update team
 	@CrossOrigin(origins = "http://localhost:4200")

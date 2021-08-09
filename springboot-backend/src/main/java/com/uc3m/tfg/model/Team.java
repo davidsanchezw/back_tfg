@@ -84,5 +84,16 @@ public class Team implements Serializable {
 	        user.getTeams().remove(this);
 	    }
 	
-	
+		public void addUser(User user) {
+			users.add(user);
+			user.addTeam(this);
+		}
+		
+		public void addList(List<User> userList) {
+			for(int i = 0; i < userList.size(); i++) {
+				System.out.println("Añadido" + userList.get(i).getFirstName());
+				users.add(userList.get(i));
+				userList.get(i).addTeam(this);
+			}	
+		}
 }
