@@ -128,6 +128,7 @@ public class GroupController {
                 user.setLastName(row.getCell(1).getStringCellValue());
                 user.setEmail(row.getCell(2).getStringCellValue());
                 user.setTypeUser((int)row.getCell(3).getNumericCellValue());
+                user.setHash(row.getCell(4).getStringCellValue());
                 
                 group.addUser(user);
                 userService.save(user);                

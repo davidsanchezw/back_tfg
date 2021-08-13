@@ -14,6 +14,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -39,11 +41,19 @@ public class Team implements Serializable {
 			)
 	private List<User> users = new ArrayList<>();
 	
+	@OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Comment> comments = new ArrayList<>();
+	
 	
 	//Tareas
 		@ManyToOne
 	    @JoinColumn(name = "task_id")
 	    private Task task;
+		
+		
+		//ResponseStatement
+		@OneToOne(mappedBy = "team")
+	    private ResponseStatement responseStatement;
 
 
 		public Team() {		
@@ -96,4 +106,15 @@ public class Team implements Serializable {
 				userList.get(i).addTeam(this);
 			}	
 		}
+
+		public void setResponseStatement(ResponseStatement responseStatement) {
+			this.responseStatement = responseStatement;
+			responseStatement.setTeam(this);
+		}
+		
+		public void addComment(Comment comment) {
+			comments.add(comment);
+			comment.setTeam(this);
+		}
+		
 }

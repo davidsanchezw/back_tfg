@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -50,6 +51,10 @@ public class ResponseStatement implements Serializable {
     @JoinColumn(name = "task_id")
     private Task task;
 	
+	//Team
+	@OneToOne
+	@JoinColumn(name = "team_id", referencedColumnName = "id")
+	private Team team;
 
 	//Forum
 	@OneToMany(mappedBy = "response", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -130,4 +135,9 @@ public class ResponseStatement implements Serializable {
         comment.setResponse(this);
     }
 
+	public void setTeam(Team team) {
+		this.team = team;
+	}
+
+	
 }

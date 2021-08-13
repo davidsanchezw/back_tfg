@@ -23,10 +23,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.uc3m.tfg.model.ResponseAnswer;
 import com.uc3m.tfg.model.ResponseStatement;
 import com.uc3m.tfg.model.Task;
+import com.uc3m.tfg.model.Team;
 import com.uc3m.tfg.model.User;
 import com.uc3m.tfg.service.ResponseAnswerService;
 import com.uc3m.tfg.service.ResponseStatementService;
 import com.uc3m.tfg.service.TaskService;
+import com.uc3m.tfg.service.TeamService;
 import com.uc3m.tfg.service.UserService;
 
 
@@ -40,6 +42,8 @@ public class ResponseController {
 	private ResponseAnswerService responseAnswerService;
 	@Autowired
 	private TaskService taskService;
+	@Autowired
+	private TeamService teamService;
 	@Autowired
 	private UserService userService;
 	
@@ -109,6 +113,23 @@ public class ResponseController {
 				Optional<User> oUser = userService.findById(user);
 				
 				oUser.get().addStatement(responseStatements);	
+				
+		return ResponseEntity.status(HttpStatus.CREATED).body(responseStatementService.save(responseStatements));
+	}
+	
+	// Create ResponseStatements Team
+	@CrossOrigin(origins = "http://localhost:4200")
+	@PostMapping("/statements/team/{team}")
+	public ResponseEntity<?> createResponseStatementsTeam(@RequestBody ResponseStatement responseStatements, @PathVariable Long team) {
+		if(!teamService.findById(team).isPresent()) {
+			return ResponseEntity.notFound().build();
+			
+		}		
+		// Search team
+				Optional<Team> oTeam = teamService.findById(team);
+				
+				oTeam.get().setResponseStatement(responseStatements);			
+		
 				
 		return ResponseEntity.status(HttpStatus.CREATED).body(responseStatementService.save(responseStatements));
 	}
@@ -194,12 +215,22 @@ public class ResponseController {
 	public ResponseEntity<?> getResponseByTaskAndUser(@PathVariable Long idTask, @PathVariable Long idUser) {
 		Optional<Task> task = taskService.findById(idTask);
 		Optional<User> user = userService.findById(idUser);
-		System.out.print(task.get().getTitle());
-		System.out.print(user.get().getEmail());
 		
 		Optional<ResponseStatement> oResponseStatement = responseStatementService.findByTaskAndUser(task.get(), user.get());
 					
 		
 		return ResponseEntity.ok(oResponseStatement);
 	}
+	
+	//getResponseByTeam	
+		@CrossOrigin(origins = "http://localhost:4200")
+		@GetMapping("/team/{idTeam}")
+		public ResponseEntity<?> getResponseByTeam(@PathVariable Long idTeam) {
+			Optional<Team> team = teamService.findById(idTeam);
+			
+			Optional<ResponseStatement> oResponseStatement = responseStatementService.findByTeam(team.get());
+			
+			return ResponseEntity.ok(oResponseStatement);
+		}
+	
 }

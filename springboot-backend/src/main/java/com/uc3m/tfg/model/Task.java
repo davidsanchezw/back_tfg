@@ -63,6 +63,10 @@ public class Task implements Serializable {
 	@OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Team> teams = new ArrayList<>();
 	
+	//Tareas
+	@OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Comment> comments = new ArrayList<>();
+	
 	public Task() {
 	
 	}

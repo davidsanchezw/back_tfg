@@ -163,15 +163,27 @@ public class TeamController {
 	}
 	
 	// Get team by task
+	@CrossOrigin(origins = "http://localhost:4200")
+	@GetMapping("/TeamsByTask/{idTask}")
+	public List<Team> getTeamsByTask(@PathVariable Long idTask) {
+		
+		Optional<Task> oTask = taskService.findById(idTask);			
+		List<Team> teams = StreamSupport
+				.stream(teamService.findByTask(oTask.get()).spliterator(), false)
+				.collect(Collectors.toList());				
+		return teams;
+	}
+	
+	// Get team by task and user
 		@CrossOrigin(origins = "http://localhost:4200")
-		@GetMapping("/TeamsByTask/{idTask}")
-		public List<Team> getTeamsByTask(@PathVariable Long idTask) {
+		@GetMapping("/TeamByTaskAndUser/{idTask}/{idUser}")
+		public ResponseEntity<?> getTeamsByTask(@PathVariable Long idTask, @PathVariable Long idUser) {
 			
-			Optional<Task> oTask = taskService.findById(idTask);			
-			List<Team> teams = StreamSupport
-					.stream(teamService.findByTask(oTask.get()).spliterator(), false)
-					.collect(Collectors.toList());				
-			return teams;
+			Optional<Task> oTask = taskService.findById(idTask);
+			Optional<User> oUser = userService.findById(idUser);
+			
+			Optional<Team> team = teamService.findByTaskAndUser(oTask.get(), oUser.get());				
+			return ResponseEntity.ok(team.get());
 		}
 	
 	

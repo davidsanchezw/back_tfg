@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.uc3m.tfg.model.ResponseStatement;
 import com.uc3m.tfg.model.Task;
+import com.uc3m.tfg.model.Team;
 import com.uc3m.tfg.model.User;
 import com.uc3m.tfg.repository.ResponseStatementRepository;
 
@@ -49,5 +50,10 @@ public class ResponseStatementServiceImpl implements ResponseStatementService{
 	@Override
 	public Optional<ResponseStatement> findByTaskAndUser(Task task, User user){
 		return responseStatementRepository.findByTaskAndUser(task, user);
+	}
+
+	@Override
+	public Optional<ResponseStatement> findByTeam(Team team) {
+		return responseStatementRepository.findByTeam(team);
 	}
 }

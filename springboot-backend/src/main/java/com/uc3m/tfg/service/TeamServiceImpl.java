@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.uc3m.tfg.model.Task;
 import com.uc3m.tfg.model.Team;
+import com.uc3m.tfg.model.User;
 import com.uc3m.tfg.repository.TeamRepository;
 
 @Service
@@ -40,6 +41,11 @@ public class TeamServiceImpl implements TeamService{
 	@Override
 	public Iterable<Team> findByTask(Task task){
 		return teamRepository.findByTask(task);
+	}
+	
+	@Override
+	public Optional<Team> findByTaskAndUser(Task task, User user) {
+		return teamRepository.findByTaskAndUsers(task, user);
 	}
 
 	@Override
