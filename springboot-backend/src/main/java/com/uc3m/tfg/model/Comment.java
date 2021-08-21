@@ -44,6 +44,15 @@ public class Comment implements Serializable {
 	@JoinColumn(name = "response_id")
 	private ResponseStatement response;
 	
+	//Team
+	@ManyToOne
+	@JoinColumn(name = "team_id")
+    private Team team;
+	
+	@ManyToOne
+    @JoinColumn(name = "task_id")
+    private Task task;
+	
 	public Comment() {}
 
 	public Comment(String commentText, int calificationResponse, int calificationCommentator, LocalDateTime time,
@@ -113,6 +122,15 @@ public class Comment implements Serializable {
 	public void setResponse(ResponseStatement response) {
 		this.response = response;
 	}
+
+	public void setTeam(Team team) {
+		this.team = team;
+	}
+
+	public void setTask(Task task) {
+		this.task = task;
+	}
+	
 	
 	
 }

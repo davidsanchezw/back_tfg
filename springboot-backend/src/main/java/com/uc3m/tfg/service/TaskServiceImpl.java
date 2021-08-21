@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.uc3m.tfg.model.Comment;
 import com.uc3m.tfg.model.Group;
 import com.uc3m.tfg.model.Task;
 import com.uc3m.tfg.repository.TaskRepository;
@@ -37,6 +38,11 @@ public class TaskServiceImpl implements TaskService{
 	}
 
 	@Override
+	public Optional<Task> findByComment(Comment comment) {
+		return taskRepository.findByCommentsOrderByIdDesc(comment);
+	}
+
+	@Override
 	public Task save(Task task) {
 		return taskRepository.save(task);
 	}
@@ -48,7 +54,7 @@ public class TaskServiceImpl implements TaskService{
 	
 	@Override
 	public Iterable<Task> findByGroup(Group group){
-		return taskRepository.findByGroup(group);
+		return taskRepository.findByGroupOrderByIdDesc(group);
 	}
 
 

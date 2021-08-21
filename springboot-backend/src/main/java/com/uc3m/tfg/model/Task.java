@@ -204,4 +204,9 @@ public class Task implements Serializable {
         teams.add(team);
         team.setTask(this);
     }
+	
+	public void addComment(Comment comment) {
+		comments.add(comment);
+		comment.setTask(this);
+	}
 }

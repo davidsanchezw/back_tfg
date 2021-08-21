@@ -12,6 +12,6 @@ import com.uc3m.tfg.model.User;
 public interface UserRepository extends JpaRepository<User, Long>{
 	//Consultas basadas en nombre de metodo
 	public Optional<User> findByEmail(String email);
-	public Iterable<User> findByGroups(Group group);
+	public Iterable<User> findByGroupsOrderByLastNameAsc(Group group);
 	public Iterable<User> findByGroupsAndTypeUser(Group group, int typeUser);
 }

@@ -159,5 +159,9 @@ public class User implements Serializable {
 	public void addTeam(Team team) {
 		teams.add(team);
     }
+	
+	public void deleteComment(Comment comment) {
+		comments.remove(comment);
+    }
 
 }

@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService{
 	
 	@Override
 	public Iterable<User> findByGroup(Group group){
-		return userRepository.findByGroups(group);
+		return userRepository.findByGroupsOrderByLastNameAsc(group);
 	}
 	
 	@Override

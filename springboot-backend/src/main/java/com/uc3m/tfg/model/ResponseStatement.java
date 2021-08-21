@@ -18,7 +18,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 
 @Entity
@@ -134,10 +133,20 @@ public class ResponseStatement implements Serializable {
 		comments.add(comment);
         comment.setResponse(this);
     }
+	
+	public void deleteComment(Comment comment) {
+		comments.remove(comment);
+    }
 
 	public void setTeam(Team team) {
 		this.team = team;
 	}
 
+	@JsonBackReference(value="comment-response")
+	public List<Comment> getComments() {
+		return comments;
+	}
+
+	
 	
 }

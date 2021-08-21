@@ -19,9 +19,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.uc3m.tfg.model.Comment;
 import com.uc3m.tfg.model.Group;
 import com.uc3m.tfg.model.Task;
-import com.uc3m.tfg.model.User;
+import com.uc3m.tfg.service.CommentService;
 import com.uc3m.tfg.service.GroupService;
 import com.uc3m.tfg.service.TaskService;
 
@@ -34,6 +35,8 @@ public class TaskController {
 	private TaskService taskService;
 	@Autowired
 	private GroupService groupService;
+	@Autowired
+	private CommentService commentService;
 	
 	// Get all tasks
 	@CrossOrigin(origins = "http://localhost:4200")
@@ -72,6 +75,18 @@ public class TaskController {
 		}
 		
 		return ResponseEntity.ok(oTask);
+	}
+	
+	// Get task by comment
+	@CrossOrigin(origins = "http://localhost:4200")
+	@GetMapping("/TaskByComment/{idComment}")
+	public Task getTaskByComment(@PathVariable Long idComment) {
+		
+		Optional<Comment> oComment = commentService.findById(idComment);		
+		
+		Optional<Task> oTask = taskService.findByComment(oComment.get());
+		
+		return oTask.get();
 	}
 	
 	// Update task

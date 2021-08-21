@@ -177,13 +177,14 @@ public class TeamController {
 	// Get team by task and user
 		@CrossOrigin(origins = "http://localhost:4200")
 		@GetMapping("/TeamByTaskAndUser/{idTask}/{idUser}")
-		public ResponseEntity<?> getTeamsByTask(@PathVariable Long idTask, @PathVariable Long idUser) {
+		public Team getTeamsByTask(@PathVariable Long idTask, @PathVariable Long idUser) {
 			
 			Optional<Task> oTask = taskService.findById(idTask);
 			Optional<User> oUser = userService.findById(idUser);
 			
+			System.out.println(oTask.get().getId() +" " + oUser.get().getId());
 			Optional<Team> team = teamService.findByTaskAndUser(oTask.get(), oUser.get());				
-			return ResponseEntity.ok(team.get());
+			return team.get();
 		}
 	
 	

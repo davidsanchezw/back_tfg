@@ -20,11 +20,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.uc3m.tfg.model.Comment;
 import com.uc3m.tfg.model.ResponseAnswer;
 import com.uc3m.tfg.model.ResponseStatement;
 import com.uc3m.tfg.model.Task;
 import com.uc3m.tfg.model.Team;
 import com.uc3m.tfg.model.User;
+import com.uc3m.tfg.service.CommentService;
 import com.uc3m.tfg.service.ResponseAnswerService;
 import com.uc3m.tfg.service.ResponseStatementService;
 import com.uc3m.tfg.service.TaskService;
@@ -46,6 +48,8 @@ public class ResponseController {
 	private TeamService teamService;
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private CommentService commentService;
 	
 	// Get all ResponseStatements
 	@CrossOrigin(origins = "http://localhost:4200")
@@ -223,12 +227,23 @@ public class ResponseController {
 	}
 	
 	//getResponseByTeam	
+	@CrossOrigin(origins = "http://localhost:4200")
+	@GetMapping("/team/{idTeam}")
+	public ResponseEntity<?> getResponseByTeam(@PathVariable Long idTeam) {
+		Optional<Team> team = teamService.findById(idTeam);
+		
+		Optional<ResponseStatement> oResponseStatement = responseStatementService.findByTeam(team.get());
+		
+		return ResponseEntity.ok(oResponseStatement);
+	}
+	
+	//getResponseByComment
 		@CrossOrigin(origins = "http://localhost:4200")
-		@GetMapping("/team/{idTeam}")
-		public ResponseEntity<?> getResponseByTeam(@PathVariable Long idTeam) {
-			Optional<Team> team = teamService.findById(idTeam);
+		@GetMapping("/comment/{idComment}")
+		public ResponseEntity<?> getResponseByComment(@PathVariable Long idComment) {
+			Optional<Comment> comment = commentService.findById(idComment);
 			
-			Optional<ResponseStatement> oResponseStatement = responseStatementService.findByTeam(team.get());
+			Optional<ResponseStatement> oResponseStatement = responseStatementService.findByComments(comment.get());
 			
 			return ResponseEntity.ok(oResponseStatement);
 		}

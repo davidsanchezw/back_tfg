@@ -116,5 +116,10 @@ public class Team implements Serializable {
 			comments.add(comment);
 			comment.setTeam(this);
 		}
+
+		
+		public void deleteComment(Comment comment) {
+			comments.remove(comment);
+	    }
 		
 }

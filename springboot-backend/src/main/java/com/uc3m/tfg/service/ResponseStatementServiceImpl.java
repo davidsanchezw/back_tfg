@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.uc3m.tfg.model.Comment;
 import com.uc3m.tfg.model.ResponseStatement;
 import com.uc3m.tfg.model.Task;
 import com.uc3m.tfg.model.Team;
@@ -55,5 +56,15 @@ public class ResponseStatementServiceImpl implements ResponseStatementService{
 	@Override
 	public Optional<ResponseStatement> findByTeam(Team team) {
 		return responseStatementRepository.findByTeam(team);
+	}
+
+	@Override
+	public Optional<ResponseStatement> findByComments(Comment comment) {
+		return responseStatementRepository.findByComments(comment);
+	}
+
+	@Override
+	public Iterable<ResponseStatement> findByTask(Task task) {
+		return responseStatementRepository.findByTaskOrderByIdAsc(task);
 	}
 }
