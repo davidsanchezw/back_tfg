@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.uc3m.tfg.model.Comment;
+import com.uc3m.tfg.model.ResponseStatement;
 import com.uc3m.tfg.model.Task;
 import com.uc3m.tfg.model.Team;
 import com.uc3m.tfg.model.User;
@@ -49,6 +50,11 @@ public class CommentServiceImpl implements CommentService{
 	}
 	
 	@Override
+	public Iterable<Comment> findByResponse(ResponseStatement responseStatement) {
+		return commentRepository.findByResponse(responseStatement);
+	}
+	
+	@Override
 	public Comment save(Comment comment) {
 		return commentRepository.save(comment);
 	}
@@ -57,4 +63,5 @@ public class CommentServiceImpl implements CommentService{
 	public void deleteById(Long id) {
 		commentRepository.deleteById(id);
 	}
+
 }

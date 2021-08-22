@@ -403,6 +403,21 @@ public class CommentController {
 		return comments;
 	}
 	
+	// Get comment by ResponseStatement
+	@CrossOrigin(origins = "http://localhost:4200")
+	@GetMapping("/responseStatement/{idResponseStatement}")
+	public List<Comment> getCommentByResponseStatement(@PathVariable Long idResponseStatement) {
+		Optional<ResponseStatement> oResponseStatement = responseStatementService.findById(idResponseStatement);
+		System.out.println(oResponseStatement.get().getId());
+		List<Comment> comments =  StreamSupport
+				.stream(commentService.findByResponse(oResponseStatement.get()).spliterator(), false)
+				.collect(Collectors.toList());	
+		
+		
+
+		return comments;
+	}
+	
 	// Update comment
 	@CrossOrigin(origins = "http://localhost:4200")
 	@PutMapping("/{id}")
@@ -433,5 +448,7 @@ public class CommentController {
 		commentService.deleteById(id);
 		return ResponseEntity.ok().build();
 	}
+	
+	
 		
 }
