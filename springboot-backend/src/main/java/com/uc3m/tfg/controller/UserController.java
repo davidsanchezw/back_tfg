@@ -25,6 +25,10 @@ import com.uc3m.tfg.model.User;
 import com.uc3m.tfg.service.GroupService;
 import com.uc3m.tfg.service.UserService;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 
 
 @RestController
@@ -82,7 +86,7 @@ public class UserController {
 		user.get().setFirstName(userDetails.getFirstName());
 		user.get().setLastName(userDetails.getLastName());
 		user.get().setEmail(userDetails.getEmail());
-		user.get().setHash(userDetails.getHash());
+		user.get().setHash(getSecurePassword(userDetails.getHash(), user.get().getSalt()));
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(user.get()));
 	}
@@ -113,49 +117,46 @@ public class UserController {
 		// login
 		@CrossOrigin(origins = "http://localhost:4200")
 		@PutMapping("/login")
-		public ResponseEntity<?> login(@RequestBody User userDetails){
+		public ResponseEntity<?> login(@RequestBody User userDetails) throws NoSuchAlgorithmException{
 			Optional<User> user = userService.findByEmail(userDetails.getEmail());
 			
 			if(!user.isPresent()) {
 				return ResponseEntity.notFound().build();
 			}
 			
-			if (user.get().getHash().compareTo(userDetails.getHash()) == 0) {
+			
+			userService.save(user.get());
+			if (user.get().getHash().compareTo(getSecurePassword(userDetails.getHash(), user.get().getSalt())) == 0) {
 				return ResponseEntity.ok(user.get());
 			}
 			return ResponseEntity.notFound().build();
 		}
-		
-//		private String getJWTToken(String username) {
-//			String secretKey = "mySecretKey";
-//			List<GrantedAuthority> grantedAuthorities = AuthorityUtils
-//					.commaSeparatedStringToAuthorityList("ROLE_USER");
-//			
-//			String token = Jwts
-//					.builder()
-//					.setId("softtekJWT")
-//					.setSubject(username)
-//					.claim("authorities",
-//							grantedAuthorities.stream()
-//									.map(GrantedAuthority::getAuthority)
-//									.collect(Collectors.toList()))
-//					.setIssuedAt(new Date(System.currentTimeMillis()))
-//					.setExpiration(new Date(System.currentTimeMillis() + 600000))
-//					.signWith(SignatureAlgorithm.HS512,
-//							secretKey.getBytes()).compact();
-//
-//			return "Bearer " + token;
-//		}
-		
-//		// Get users by token
-//				@CrossOrigin(origins = "http://localhost:4200")
-//				@GetMapping("/token")
-//				public List<User> getUsersBToken(@PathVariable Long id){
-//					Optional<Group> group = groupService.findById(id);
-//					List<User> users = StreamSupport
-//							.stream(userService.findByGroup(group.get()).spliterator(), false)
-//							.collect(Collectors.toList());
-//					return users;
-//				}
+	
+	//SHA-512
+	public static String getSecurePassword(String password, String string) {
+
+        String generatedPassword = null;
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-512");
+            md.update(string.getBytes());
+            byte[] bytes = md.digest(password.getBytes(StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < bytes.length; i++) {
+                sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+            }
+            generatedPassword = sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        System.out.println(generatedPassword);
+        return generatedPassword;        
+    }
+
+	private static String getSalt() throws NoSuchAlgorithmException {
+        SecureRandom random = new SecureRandom();
+        byte[] salt = new byte[16];
+        random.nextBytes(salt);
+        return new String(salt, StandardCharsets.UTF_8);
+    }
 	
 }

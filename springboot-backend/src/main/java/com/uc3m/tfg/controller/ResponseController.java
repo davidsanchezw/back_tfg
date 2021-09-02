@@ -237,6 +237,18 @@ public class ResponseController {
 		return ResponseEntity.ok(oResponseStatement);
 	}
 	
+	//getResponsesByTask	
+		@CrossOrigin(origins = "http://localhost:4200")
+		@GetMapping("/task/{idTask}")
+		public List<ResponseStatement> getResponseByTask(@PathVariable Long idTask) {
+			Optional<Task> task = taskService.findById(idTask);
+			
+			List<ResponseStatement> responses = StreamSupport
+					.stream(responseStatementService.findByTask(task.get()).spliterator(), false)
+					.collect(Collectors.toList());
+			return responses;
+		}
+	
 	//getResponseByComment
 		@CrossOrigin(origins = "http://localhost:4200")
 		@GetMapping("/comment/{idComment}")

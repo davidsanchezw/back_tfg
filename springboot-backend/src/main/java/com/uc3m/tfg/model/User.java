@@ -37,7 +37,10 @@ public class User implements Serializable {
 	private String email;
 	
 	@Column(name = "type_user")
-	private int typeUser;	
+	private int typeUser;
+	
+	@Column(name = "salt")
+	private String salt;
 	
 	@Column(name = "hash")
 	private String hash;
@@ -104,6 +107,15 @@ public class User implements Serializable {
 
 	public void setTypeUser(int typeUser) {
 		this.typeUser = typeUser;
+	}
+
+	
+	public String getSalt() {
+		return salt;
+	}	
+
+	public void setSalt(String salt) {
+		this.salt = salt;
 	}
 
 	public String getHash() {

@@ -1,6 +1,10 @@
 package com.uc3m.tfg.controller;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +15,8 @@ import java.util.stream.StreamSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +33,7 @@ import org.apache.poi.xssf.usermodel.*;
 import com.uc3m.tfg.model.Group;
 import com.uc3m.tfg.model.Task;
 import com.uc3m.tfg.model.User;
+import com.uc3m.tfg.service.EnvioEmail;
 import com.uc3m.tfg.service.GroupService;
 import com.uc3m.tfg.service.TaskService;
 import com.uc3m.tfg.service.UserService;
@@ -42,6 +49,8 @@ public class GroupController {
 	private UserService userService;
 	@Autowired
 	private TaskService taskService;
+	@Autowired
+    private EnvioEmail emailService;
 	
 	// Get all groups
 	@CrossOrigin(origins = "http://localhost:4200")
@@ -71,8 +80,7 @@ public class GroupController {
 		
 		if(!oGroup.isPresent()) {
 			return ResponseEntity.notFound().build();
-		}
-		
+		}		
 		return ResponseEntity.ok(oGroup);
 	}
 	
@@ -107,7 +115,7 @@ public class GroupController {
 	// Add users file - Import excel
 	@CrossOrigin(origins = "http://localhost:4200")
 	@PostMapping("/add/{id}")
-	public ResponseEntity<List<User>> importExcelFile(@PathVariable Long id, @RequestParam("file") MultipartFile files) throws IOException {
+	public ResponseEntity<List<User>> importExcelFile(@PathVariable Long id, @RequestParam("file") MultipartFile files) throws IOException, NoSuchAlgorithmException {
         HttpStatus status = HttpStatus.OK;
         List<User> userList = new ArrayList<>();
 
@@ -127,17 +135,19 @@ public class GroupController {
                 user.setFirstName(row.getCell(0).getStringCellValue());
                 user.setLastName(row.getCell(1).getStringCellValue());
                 user.setEmail(row.getCell(2).getStringCellValue());
-                user.setTypeUser((int)row.getCell(3).getNumericCellValue());
-                user.setHash(row.getCell(4).getStringCellValue());
+                user.setTypeUser((int)row.getCell(3).getNumericCellValue());                
+                user.setSalt(getSalt());
+                user.setHash(getSecurePassword(row.getCell(4).getStringCellValue(), user.getSalt()));
                 
                 group.addUser(user);
                 userService.save(user);                
                 userList.add(user);
+                emailService.sendEmail(user.getEmail(), "Contraseña PeerToPeer", row.getCell(4).getStringCellValue());
             }
         }
 
         return new ResponseEntity<>(userList, status);
-    }
+    }	
 	
 	// Add an user to a group
 	@CrossOrigin(origins = "http://localhost:4200")
@@ -197,5 +207,32 @@ public class GroupController {
 		
 		return ResponseEntity.ok(oGroup);
 	}
+	
+	//SHA-512
+		public static String getSecurePassword(String password, String string) {
+
+	        String generatedPassword = null;
+	        try {
+	            MessageDigest md = MessageDigest.getInstance("SHA-512");
+	            md.update(string.getBytes());
+	            byte[] bytes = md.digest(password.getBytes(StandardCharsets.UTF_8));
+	            StringBuilder sb = new StringBuilder();
+	            for (int i = 0; i < bytes.length; i++) {
+	                sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+	            }
+	            generatedPassword = sb.toString();
+	        } catch (NoSuchAlgorithmException e) {
+	            e.printStackTrace();
+	        }
+	        System.out.println(generatedPassword);
+	        return generatedPassword;        
+	    }
+
+		private static String getSalt() throws NoSuchAlgorithmException {
+	        SecureRandom random = new SecureRandom();
+	        byte[] salt = new byte[16];
+	        random.nextBytes(salt);
+	        return new String(salt, StandardCharsets.UTF_8);
+	    }
 	
 }
