@@ -20,9 +20,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.uc3m.tfg.model.Comment;
 import com.uc3m.tfg.model.Group;
+import com.uc3m.tfg.model.ResponseStatement;
 import com.uc3m.tfg.model.User;
+import com.uc3m.tfg.service.CommentService;
 import com.uc3m.tfg.service.GroupService;
+import com.uc3m.tfg.service.ResponseStatementService;
 import com.uc3m.tfg.service.UserService;
 
 import java.nio.charset.StandardCharsets;
@@ -40,6 +44,12 @@ public class UserController {
 	
 	@Autowired
 	private GroupService groupService;
+	
+	@Autowired
+	private ResponseStatementService responseStatementService;
+	
+	@Autowired
+	private CommentService commentService;
 	
 	// Get all users
 	@CrossOrigin(origins = "http://localhost:4200")
@@ -131,6 +141,63 @@ public class UserController {
 			}
 			return ResponseEntity.notFound().build();
 		}
+		
+		// Get medTAsk
+		@CrossOrigin(origins = "http://localhost:4200")
+		@GetMapping("/medTask/{idUser}")
+		public double getmedTask(@PathVariable Long idUser){
+			Optional<User> user = userService.findById(idUser);
+			List<ResponseStatement> responses = StreamSupport
+					.stream(responseStatementService.findByUser(user.get()).spliterator(), false)
+					.collect(Collectors.toList());
+			double medTask = 0;
+			double sumCalifications = 0;
+			double numberCalifications = 0;
+			
+			for (int i = 0; i < responses.size(); i++) {
+				List<Comment> comments = StreamSupport
+						.stream(commentService.findByResponse(responses.get(i)).spliterator(), false)
+						.collect(Collectors.toList());
+				for (int j = 0; j < comments.size(); j++) {
+					sumCalifications = sumCalifications + comments.get(j).getCalificationResponse();
+				}
+				numberCalifications = numberCalifications + comments.size();
+			}			
+			
+			medTask = sumCalifications / numberCalifications;
+			return medTask;
+		}
+		
+		// Get medComments
+		@CrossOrigin(origins = "http://localhost:4200")
+		@GetMapping("/medComments/{idUser}")
+		public double getmedComments(@PathVariable Long idUser){
+			Optional<User> user = userService.findById(idUser);
+			List<Comment> comments = StreamSupport
+					.stream(commentService.findByUser(user.get()).spliterator(), false)
+					.collect(Collectors.toList());
+			List<Comment> commentsTeam = StreamSupport
+					.stream(commentService.findByUser(user.get()).spliterator(), false)
+					.collect(Collectors.toList());
+			double medComments = 0;
+			double sumCalifications = 0;
+			double numberCalifications = 0;
+			
+			for (int i = 0; i < comments.size(); i++) {
+				sumCalifications = sumCalifications + comments.get(i).getCalificationCommentator();
+			}	
+			numberCalifications = numberCalifications + comments.size();
+			
+			for (int i = 0; i < commentsTeam.size(); i++) {
+				sumCalifications = sumCalifications + commentsTeam.get(i).getCalificationCommentator();
+			}	
+			numberCalifications = numberCalifications + commentsTeam.size();
+			
+			medComments = sumCalifications / numberCalifications;
+			return medComments;
+		}
+		
+		
 	
 	//SHA-512
 	public static String getSecurePassword(String password, String string) {

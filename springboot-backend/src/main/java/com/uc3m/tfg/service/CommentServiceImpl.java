@@ -53,6 +53,16 @@ public class CommentServiceImpl implements CommentService{
 	public Iterable<Comment> findByResponse(ResponseStatement responseStatement) {
 		return commentRepository.findByResponse(responseStatement);
 	}
+
+	@Override
+	public Iterable<Comment> findByUser(User user) {
+		return commentRepository.findByUser(user);
+	}
+
+	@Override
+	public Iterable<Comment> findByeam(Team team) {
+		return commentRepository.findByTeam(team);
+	}
 	
 	@Override
 	public Comment save(Comment comment) {

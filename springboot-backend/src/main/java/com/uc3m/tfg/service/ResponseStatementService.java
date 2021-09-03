@@ -31,5 +31,7 @@ public interface ResponseStatementService {
 	public Optional<ResponseStatement> findByComments(Comment comment);
 	
 	public Iterable<ResponseStatement> findByTask(Task task);
+	
+	public Iterable<ResponseStatement> findByUser(User user);
 
 }

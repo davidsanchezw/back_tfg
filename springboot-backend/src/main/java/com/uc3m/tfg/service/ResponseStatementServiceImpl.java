@@ -67,4 +67,9 @@ public class ResponseStatementServiceImpl implements ResponseStatementService{
 	public Iterable<ResponseStatement> findByTask(Task task) {
 		return responseStatementRepository.findByTaskOrderByIdAsc(task);
 	}
+
+	@Override
+	public Iterable<ResponseStatement> findByUser(User user) {
+		return responseStatementRepository.findByUser(user);
+	}
 }

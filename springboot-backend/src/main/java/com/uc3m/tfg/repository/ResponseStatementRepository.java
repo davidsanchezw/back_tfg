@@ -19,4 +19,5 @@ public interface ResponseStatementRepository extends JpaRepository<ResponseState
 	public Optional<ResponseStatement> findByTeam(Team team);
 	public Optional<ResponseStatement> findByComments(Comment comment);
 	public Iterable<ResponseStatement> findByTaskOrderByIdAsc(Task task);
+	public Iterable<ResponseStatement> findByUser(User user);
 }

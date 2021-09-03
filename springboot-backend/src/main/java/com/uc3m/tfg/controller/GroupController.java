@@ -125,24 +125,28 @@ public class GroupController {
         Group group = groupService.findById(id).get();
 		List<Group> listGroups = new ArrayList<>();
 		listGroups.add(group);
+		String previousPass;
+		String salt;
 		
         for (int index = 0; index < worksheet.getPhysicalNumberOfRows(); index++) {
             if (index > 0) {
             	User user = new User();
-
+            	System.out.print(worksheet.getPhysicalNumberOfRows());
                 XSSFRow row = worksheet.getRow(index);
 
                 user.setFirstName(row.getCell(0).getStringCellValue());
                 user.setLastName(row.getCell(1).getStringCellValue());
                 user.setEmail(row.getCell(2).getStringCellValue());
-                user.setTypeUser((int)row.getCell(3).getNumericCellValue());                
-                user.setSalt(getSalt());
-                user.setHash(getSecurePassword(row.getCell(4).getStringCellValue(), user.getSalt()));
+                user.setTypeUser((int)row.getCell(3).getNumericCellValue()); 
+                previousPass= row.getCell(4).getStringCellValue();
+                salt = getSalt();
+                user.setSalt(salt);                
+                user.setHash(getSecurePassword(previousPass, salt));
                 
                 group.addUser(user);
                 userService.save(user);                
                 userList.add(user);
-                emailService.sendEmail(user.getEmail(), "Contraseña PeerToPeer", row.getCell(4).getStringCellValue());
+                emailService.sendEmail(user.getEmail(), "Contraseña PeerToPeer", previousPass);
             }
         }
 

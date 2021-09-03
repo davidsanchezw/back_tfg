@@ -26,6 +26,10 @@ public interface CommentService {
 	
 	public Iterable<Comment> findByResponse(ResponseStatement responseStatement);
 	
+	public Iterable<Comment> findByUser(User user);
+	
+	public Iterable<Comment> findByeam(Team team);
+	
 	public Comment save(Comment comment);
 	
 	public void deleteById(Long id);	

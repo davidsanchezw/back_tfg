@@ -18,4 +18,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long>{
 	public Iterable<Comment> findByTaskAndUser(Task task, User user);
 	public Iterable<Comment> findByTaskAndTeam(Task task, Team team);
 	public Iterable<Comment> findByResponse(ResponseStatement responseStatement);
+	public Iterable<Comment> findByUser(User user);
+	public Iterable<Comment> findByTeam(Team team);
 }
